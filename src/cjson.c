@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
   }
 
   const size_t bufferLength = 50;
-  char jsonString[bufferLength] = {'\0'};
+  char jsonString[bufferLength];
   size_t bytesRead = fread(jsonString, sizeof(char), 50, file);
 
   fclose(file);
