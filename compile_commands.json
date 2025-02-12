@@ -1,0 +1,20 @@
+[
+{
+  "directory": "/home/melman/code/cjson/build",
+  "command": "clang -I/home/melman/code/cjson/include -Wall -Wextra -Wpedantic -o CMakeFiles/cjson.dir/src/cjson.c.o -c /home/melman/code/cjson/src/cjson.c",
+  "file": "/home/melman/code/cjson/src/cjson.c",
+  "output": "CMakeFiles/cjson.dir/src/cjson.c.o"
+},
+{
+  "directory": "/home/melman/code/cjson/build",
+  "command": "clang -I/home/melman/code/cjson/include -Wall -Wextra -Wpedantic -o CMakeFiles/cjson.dir/src/utils.c.o -c /home/melman/code/cjson/src/utils.c",
+  "file": "/home/melman/code/cjson/src/utils.c",
+  "output": "CMakeFiles/cjson.dir/src/utils.c.o"
+},
+{
+  "directory": "/home/melman/code/cjson/build",
+  "command": "clang -I/home/melman/code/cjson/include -Wall -Wextra -Wpedantic -o CMakeFiles/cjson.dir/src/utf8JsonReader.c.o -c /home/melman/code/cjson/src/utf8JsonReader.c",
+  "file": "/home/melman/code/cjson/src/utf8JsonReader.c",
+  "output": "CMakeFiles/cjson.dir/src/utf8JsonReader.c.o"
+}
+]
