@@ -48,4 +48,4 @@ include_directories(include)
 target_compile_options(cjson PRIVATE -Wall -Wextra -Wpedantic)
 
 # Set output directory
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

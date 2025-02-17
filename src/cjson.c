@@ -14,7 +14,7 @@ const char *JsonTokenTypeStrings[UNDEFINED_JT + 1] = {
     "Property", "Comment",     "String",    "Number",     "True",
     "False",    "Null",        "Undefined"};
 
-const char *ReadStateStrings[COMPLETE + 1] = {"Incomplete", "Complete"};
+const char *ReadStateStrings[ERROR + 1] = {"Incomplete", "Complete", "Error"};
 
 int main(int argc, char *argv[]) {
   printf("CJSON Project Initialized\n");
@@ -45,23 +45,30 @@ int main(int argc, char *argv[]) {
   Utf8JsonReaderState readerState;
   char *jsonPtr = jsonString;
   while (charsRead <= bufferLength) {
-    Utf8JsonReaderState readerState = {.readCount = 0,
+    readerState = (Utf8JsonReaderState) {.readCount = 0,
                                        .tokenType = NONE,
                                        .readState = INCOMPLETE,
                                        .inObject = false,
                                        .inArray = false,
-                                       .beforeColon = false};
+                                       .beforeColon = true};
+    printf("  Loop: %llu %s\n", charsRead, jsonPtr);
     size_t currentRead = utf8JsonReader_read(jsonPtr, 50, &readerState);
+    printf("  After Read: %llu\n", currentRead);
     jsonPtr += currentRead;
+    charsRead += currentRead;
+
+    if (currentRead == 0) {
+      break;
+    }
   }
 
   printf("Reader State: \n");
   printf("  Read Count: %i\n", readerState.readCount);
-  printf("  Token Token: %s\n", JsonTokenTypeStrings[readerState.tokenType]);
+  printf("  Token Type: %s\n", JsonTokenTypeStrings[readerState.tokenType]);
   printf("  Read State: %s\n", ReadStateStrings[readerState.readState]);
-  printf("  In Object: %b\n", readerState.inObject);
-  printf("  In Array: %b\n", readerState.inArray);
-  printf("  Before Colon: %b\n", readerState.beforeColon);
+  printf("  In Object: %d\n", readerState.inObject);
+  printf("  In Array: %d\n", readerState.inArray);
+  printf("  Before Colon: %d\n", readerState.beforeColon);
 
   return 0;
 }

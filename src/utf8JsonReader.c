@@ -4,6 +4,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+typedef struct {
+  ReadState state;
+  size_t read;
+} ReadResult;
+
 size_t readForward(char *stream, char *output, size_t currentIndex,
                    size_t readLength) {
   for (size_t y = 0; y < readLength; y++) {
@@ -13,16 +18,23 @@ size_t readForward(char *stream, char *output, size_t currentIndex,
   return readLength;
 }
 
-int consumeTill(char *stream, size_t length, size_t position, char nextChar) {
+ReadResult consumeTill(const char *stream, size_t length, char nextChar) {
   size_t count = 0;
-  for (size_t i = position; i < length; i++) {
-    char current = stream[i];
+  for (size_t i = 0; i < length; i++) {
+    const char current = stream[i];
     if (current == nextChar) {
-      return count;
+      return (ReadResult) {
+        .state = COMPLETE,
+        .read = i + 1,
+      };
     }
     count++;
   }
-  return -1;
+
+  return (ReadResult) {
+    .state = INCOMPLETE,
+    .read = length,
+  };
 }
 
 int utf8JsonReader_read(char *stream, size_t length,
@@ -41,6 +53,7 @@ int utf8JsonReader_read(char *stream, size_t length,
   bool inArray = false;
   bool inObject = false;
   bool beforeColon = false;
+  bool inString = false;
 
   for (size_t i = 0; i < length; i++) {
     char value = stream[i];
@@ -50,17 +63,12 @@ int utf8JsonReader_read(char *stream, size_t length,
     printf("    Token Type: %i\n", tokenType);
     printf("    Read State: %i\n", readState);
     printf("    Read Length: %i\n", readLength);
-    printf("    Is String: %b\n", isStringType);
-    printf("    Is Before Colon: %b\n", isBeforeColon);
+    printf("    Is String: %d\n", isStringType);
+    printf("    Is Before Colon: %d\n", isBeforeColon);
 
     // if it's a space type char and we're not collecting a string
-    if (isspace(value) && !isStringType) {
-      continue;
-    }
-
-    // not got to the end of the string yet
-    if (isStringType && value != '"') {
-      readChars[readLength - 1] = value;
+    if (isspace(value)) {
+      readLength++;
       continue;
     }
 
@@ -85,16 +93,24 @@ int utf8JsonReader_read(char *stream, size_t length,
         tokenType = PROPERTY;
       } else {
         tokenType = STRING_JT;
+        // this means we've just consumed
+        isBeforeColon = true;
       }
-      if (isStringType) {
-        shouldContinue = false;
-        readState = COMPLETE;
-      } else {
-        isStringType = true;
-        shouldContinue = true;
+      const char *restOfStream = stream + 1;
+      const ReadResult result = consumeTill(restOfStream, length - 1, '"');
+      if (result.state == INCOMPLETE) {
+        inString = true;
+        readLength += result.read;
+        readState = result.state;
+        break;
       }
       readLength++;
       break;
+      case COLON:
+        isBeforeColon = false;
+
+        break;
+
     case OPEN_BRACKET:
       tokenType = START_ARRAY;
       readChars[0] = value;

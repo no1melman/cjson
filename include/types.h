@@ -8,6 +8,7 @@ typedef enum {
   CLOSED_BRACE = '}',
   QUOTE = '"',
   COLON = ':',
+  COMMA = ',',
   OPEN_BRACKET = '[',
   CLOSED_BRACKET = ']',
   TRUE_TOKEN = 't',

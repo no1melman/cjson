@@ -4,7 +4,7 @@
 #ifndef UTF8JSONREADER_H
 #define UTF8JSONREADER_H
 
-typedef enum { INCOMPLETE, COMPLETE } ReadState;
+typedef enum { INCOMPLETE, COMPLETE, ERROR } ReadState;
 
 typedef struct {
   unsigned int readCount;
@@ -12,6 +12,7 @@ typedef struct {
   ReadState readState;
   bool inObject;
   bool inArray;
+  bool inString;
   bool beforeColon;
 } Utf8JsonReaderState;
 
