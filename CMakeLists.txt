@@ -8,9 +8,11 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Use Ninja as the generator
-set(CMAKE_C_COMPILER clang)
-set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_C_COMPILER gcc)
+# set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_GENERATOR "Ninja")
+# set(CMAKE_LINKER_TYPE ld.lld)
+# set(CMAKE_C_USING_LINKER_LLD "-fuse-ld=lld")
 
 if(WIN32)
   message(STATUS "On Windows:")
@@ -32,12 +34,14 @@ endif()
 project(cjson C)
 
 # Specify the source files
-set(SOURCES src/cjson.c src/utils.c src/utf8JsonReader.c)
+# set(SOURCES src/cjson.c src/utils.c src/utf8JsonReader.c)
+set(SOURCES src/cjson.c src/utils.c)
 
 # Specify the header files
-set(HEADERS include/cjson.h include/utils.h include/types.h
-            include/utf8JsonReader.h)
-
+# set(HEADERS include/cjson.h include/utils.h include/types.h
+#             include/utf8JsonReader.h)
+#
+set(HEADERS include/cjson.h include/utils.h include/types.h)
 # Create the executable
 add_executable(cjson ${SOURCES} ${HEADERS})
 

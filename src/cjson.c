@@ -2,8 +2,7 @@
 #include <stdlib.h>
 
 #include "cjson.h"
-#include "utf8JsonReader.h"
-#include "utils.h"
+#include "hashset.h"
 
 const char *JsonValueKindStrings[NULL_VK + 1] = {"Undefined", "Object", "Array",
                                                  "String",    "Number", "True",
@@ -32,25 +31,30 @@ int main(int argc, char *argv[]) {
 
   if (file == NULL) {
     fprintf(stderr, "Error: Can't open file\n");
+    return 1;
   }
 
+  ht *jsonData = create_map();
   const size_t bufferLength = 50;
   char jsonString[bufferLength];
-  size_t bytesRead = fread(jsonString, sizeof(char), 50, file);
+  printf("Reading file...");
+  size_t bytesRead = fread(jsonString, sizeof(char), bufferLength, file);
 
+  printf("Closing file...");
   fclose(file);
 
   char readAmount[100];
   size_t charsRead = 0;
-  Utf8JsonReaderState readerState;
+  /*Utf8JsonReaderState readerState;*/
+  printf("Closing file...");
   char *jsonPtr = jsonString;
   while (charsRead <= bufferLength) {
-    readerState = (Utf8JsonReaderState) {.readCount = 0,
-                                       .tokenType = NONE,
-                                       .readState = INCOMPLETE,
-                                       .inObject = false,
-                                       .inArray = false,
-                                       .beforeColon = true};
+    readerState = (Utf8JsonReaderState){.readCount = 0,
+                                        .tokenType = NONE,
+                                        .readState = INCOMPLETE,
+                                        .inObject = false,
+                                        .inArray = false,
+                                        .beforeColon = true};
     printf("  Loop: %llu %s\n", charsRead, jsonPtr);
     size_t currentRead = utf8JsonReader_read(jsonPtr, 50, &readerState);
     printf("  After Read: %llu\n", currentRead);
@@ -69,6 +73,8 @@ int main(int argc, char *argv[]) {
   printf("  In Object: %d\n", readerState.inObject);
   printf("  In Array: %d\n", readerState.inArray);
   printf("  Before Colon: %d\n", readerState.beforeColon);
+
+  destroy_map(jsonData);
 
   return 0;
 }
