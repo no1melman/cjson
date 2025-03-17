@@ -3,6 +3,9 @@
 
 #include "cjson.h"
 #include "hashset.h"
+#include "stack.h"
+#include "types.h"
+#include "utf8JsonReader.h"
 
 const char *JsonValueKindStrings[NULL_VK + 1] = {"Undefined", "Object", "Array",
                                                  "String",    "Number", "True",
@@ -18,9 +21,10 @@ const char *ReadStateStrings[ERROR + 1] = {"Incomplete", "Complete", "Error"};
 int main(int argc, char *argv[]) {
   printf("CJSON Project Initialized\n");
 
-  if (argc != 2) {
+
+  if (argc != 1) {
     fprintf(stderr, "Error: Incorrect number of arguments!\n");
-    return 1;
+    return 0;
   }
 
   char *fileName = argv[1];
@@ -35,6 +39,7 @@ int main(int argc, char *argv[]) {
   }
 
   ht *jsonData = create_map();
+  stack* json_read_stack = create_stack();
   const size_t bufferLength = 50;
   char jsonString[bufferLength];
   printf("Reading file...");
@@ -45,7 +50,7 @@ int main(int argc, char *argv[]) {
 
   char readAmount[100];
   size_t charsRead = 0;
-  /*Utf8JsonReaderState readerState;*/
+  Utf8JsonReaderState readerState;
   printf("Closing file...");
   char *jsonPtr = jsonString;
   while (charsRead <= bufferLength) {
@@ -75,6 +80,7 @@ int main(int argc, char *argv[]) {
   printf("  Before Colon: %d\n", readerState.beforeColon);
 
   destroy_map(jsonData);
+  destroy_stack(json_read_stack);
 
   return 0;
 }

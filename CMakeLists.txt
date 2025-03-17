@@ -7,41 +7,28 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # Set the compiler to Clang
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Use Ninja as the generator
 set(CMAKE_C_COMPILER gcc)
-# set(CMAKE_CXX_COMPILER clang++)
+# Use Ninja as the generator
 set(CMAKE_GENERATOR "Ninja")
-# set(CMAKE_LINKER_TYPE ld.lld)
-# set(CMAKE_C_USING_LINKER_LLD "-fuse-ld=lld")
-
-if(WIN32)
-  message(STATUS "On Windows:")
-
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -target x86_64-w64-mingw32")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -target x86_64-w64-mingw32")
-endif()
 
 find_program(CCACHE_PROGRAM ccache)
 
-if(CCACHE_PROGRAM)
-  message(STATUS "ccache: found")
+if (CCACHE_PROGRAM)
+    message(STATUS "ccache: found")
 
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
-else()
-  message(STATUS "no ccache")
-endif()
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
+else ()
+    message(STATUS "no ccache")
+endif ()
 
 project(cjson C)
 
 # Specify the source files
-# set(SOURCES src/cjson.c src/utils.c src/utf8JsonReader.c)
-set(SOURCES src/cjson.c src/utils.c)
+set(SOURCES src/cjson.c src/utils.c src/utf8JsonReader.c src/hasher.c src/hashset.c src/stack.c)
 
 # Specify the header files
-# set(HEADERS include/cjson.h include/utils.h include/types.h
-#             include/utf8JsonReader.h)
-#
-set(HEADERS include/cjson.h include/utils.h include/types.h)
+set(HEADERS include/cjson.h include/utils.h include/types.h
+        include/stack.h include/utf8JsonReader.h include/hasher.h include/hashset.h include/stack.h)
 # Create the executable
 add_executable(cjson ${SOURCES} ${HEADERS})
 

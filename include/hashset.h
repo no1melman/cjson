@@ -1,9 +1,8 @@
-#include "hasher.h"
-#include <stdbool.h>
-#include <stdlib.h>
-
 #ifndef HASHSET_H
 #define HASHSET_H
+
+#include <stdbool.h>
+#include <stdlib.h>
 
 typedef struct {
   const char *key;
