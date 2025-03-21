@@ -46,6 +46,7 @@ typedef enum {
 
 typedef struct {
   JsonTokenType TokenType;
+  void* value;
   size_t index;
   size_t count;
 } Token;
